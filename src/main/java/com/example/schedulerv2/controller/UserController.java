@@ -16,6 +16,14 @@ public class UserController {
 
     private final UserService userService;
 
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){
+        LoginResponseDto loginResponseDto = userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+
+        return new ResponseEntity<>(loginResponseDto, HttpStatus.OK);
+    }
+
     // 유저 생성
     @PostMapping("/signup")
     public ResponseEntity<SaveUserResponseDto> save(@RequestBody SaveUserRequestDto saveUserRequestDto){

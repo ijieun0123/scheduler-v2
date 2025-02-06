@@ -1,10 +1,12 @@
 package com.example.schedulerv2.service;
 
+import com.example.schedulerv2.dto.LoginResponseDto;
 import com.example.schedulerv2.dto.ReadUserResponseDto;
 import com.example.schedulerv2.dto.SaveUserResponseDto;
 import com.example.schedulerv2.dto.UpdateUserResponseDto;
 import com.example.schedulerv2.entity.User;
 import com.example.schedulerv2.repository.UserRepository;
+import com.example.schedulerv2.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,19 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    public LoginResponseDto login(String email, String password) {
+        User findUser = userRepository.findUserByEmailOrElseThrow(email);
+
+        String storedPassword = findUser.getPassword();
+        if(!storedPassword.equals(password)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password is wrong");
+        }
+
+        String token = JwtUtil.generateToken(email);
+
+        return new LoginResponseDto(token);
+    }
 
     public SaveUserResponseDto save(String username, String email, String password) {
         User user = new User(username, email, password);
