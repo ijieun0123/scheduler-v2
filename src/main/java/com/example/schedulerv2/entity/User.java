@@ -2,6 +2,7 @@ package com.example.schedulerv2.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -13,10 +14,10 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    @Setter private String username;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    @Setter private String email;
 
     @Column(nullable = false)
     private String password;
