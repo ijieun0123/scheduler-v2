@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/schedules")
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class ScheduleController {
     // 스케줄 생성
     @PostMapping
     public ResponseEntity<SaveScheduleResponseDto> save(@RequestBody SaveScheduleRequestDto saveScheduleRequestDto){
-        SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.save(saveScheduleRequestDto.getTitle(), saveScheduleRequestDto.getContents(), saveScheduleRequestDto.getUsername());
+        SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.save(saveScheduleRequestDto.getEmail(), saveScheduleRequestDto.getPassword(), saveScheduleRequestDto.getTitle(), saveScheduleRequestDto.getPassword());
 
         return new ResponseEntity<>(saveScheduleResponseDto, HttpStatus.CREATED);
     }
@@ -28,6 +30,14 @@ public class ScheduleController {
         ReadScheduleResponseDto readScheduleResponseDto = scheduleService.findById(id);
 
         return new ResponseEntity<>(readScheduleResponseDto, HttpStatus.OK);
+    }
+
+    // 스케줄 전체 조회
+    @GetMapping
+    public ResponseEntity<List<ReadScheduleResponseDto>> findAll(){
+        List<ReadScheduleResponseDto> schedules = scheduleService.findAll();
+
+        return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
     // 스케줄 수정

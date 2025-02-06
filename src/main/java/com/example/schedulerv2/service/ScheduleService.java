@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,8 +25,15 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
-    public SaveScheduleResponseDto save(String title, String contents, String username) {
-        User findUser = userRepository.findUserByUsernameOrElseThrow(username);
+    public SaveScheduleResponseDto save(String email, String password, String title, String contents) {
+        User findUser = userRepository.findUserByEmailOrElseThrow(email);
+
+        String storedEmail = findUser.getEmail();
+        String storedPassword = findUser.getPassword();
+
+        if(!storedPassword.equals(password) || !storedEmail.equals(email)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password or Email is wrong");
+        }
 
         Schedule schedule = new Schedule(title, contents);
         schedule.setUser(findUser);
@@ -34,13 +44,17 @@ public class ScheduleService {
     }
 
     public ReadScheduleResponseDto findById(Long id) {
-        log.info("id: {}", id);
-
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
 
-        log.info("findSchedule: {}", findSchedule);
-
         return new ReadScheduleResponseDto(findSchedule.getId(), findSchedule.getTitle(), findSchedule.getContents(), findSchedule.getUser().getUsername(), findSchedule.getCreatedAt(), findSchedule.getModifiedAt());
+    }
+
+    public List<ReadScheduleResponseDto> findAll() {
+        List<Schedule> findSchedules = scheduleRepository.findAll();
+
+        return findSchedules.stream().map(findSchedule -> {
+            return new ReadScheduleResponseDto(findSchedule.getId(), findSchedule.getTitle(), findSchedule.getContents(), findSchedule.getUser().getUsername(), findSchedule.getCreatedAt(), findSchedule.getModifiedAt());
+        }).collect(Collectors.toList());
     }
 
     @Transactional
@@ -54,8 +68,8 @@ public class ScheduleService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password or Email is wrong");
         }
 
-        findSchedule.setTitle(title);
-        findSchedule.setContents(contents);
+        if(title != null) findSchedule.setTitle(title);
+        if(contents != null) findSchedule.setContents(contents);
 
         return new UpdateScheduleResponseDto(findSchedule.getId(), findSchedule.getTitle(), findSchedule.getContents(), findSchedule.getUser().getUsername(), findSchedule.getCreatedAt(), findSchedule.getModifiedAt());
     }

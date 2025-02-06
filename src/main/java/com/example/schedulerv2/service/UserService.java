@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,26 +36,41 @@ public class UserService {
         return new ReadUserResponseDto(findUser.getId(), findUser.getUsername(), findUser.getEmail(), findUser.getCreatedAt(), findUser.getModifiedAt());
     }
 
+    public List<ReadUserResponseDto> findAll() {
+        List<User> findUsers = userRepository.findAll();
+
+        return findUsers.stream().map(findUser -> {
+            return new ReadUserResponseDto(findUser.getId(), findUser.getUsername(), findUser.getEmail(), findUser.getCreatedAt(), findUser.getModifiedAt());
+        }).collect(Collectors.toList());
+    }
+
     @Transactional
     public UpdateUserResponseDto update(Long id, String username, String email, String password) {
-        // 비밀번호 맞는지 확인
+        // 비밀번호, 이메일 찾기
         User findUser = userRepository.findByIdOrElseThrow(id);
         String storedPasssword = findUser.getPassword();
+        String storedEmail = findUser.getEmail();
 
-        // 비밀번호 틀리다면 오류처리
-        if(!storedPasssword.equals(password)){
+        // 비밀번호나 이메일이 틀리다면 오류처리
+        if(!storedPasssword.equals(password) || !storedEmail.equals(email)){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password is wrong");
         }
 
-        // 비밀번호 맞다면, username, email 바꾸기
+        // 비밀번호, 이메일이 맞다면, username 바꿀 수 있다.
         findUser.setUsername(username);
-        findUser.setEmail(email);
 
         return new UpdateUserResponseDto(findUser.getId(), findUser.getUsername(), findUser.getEmail(), findUser.getCreatedAt(), findUser.getModifiedAt());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, String email, String password) {
         User findUser = userRepository.findByIdOrElseThrow(id);
+        String storedPasssword = findUser.getPassword();
+        String storedEmail = findUser.getEmail();
+
+        // 비밀번호나 이메일이 틀리다면 오류처리
+        if(!storedPasssword.equals(password) || !storedEmail.equals(email)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password is wrong");
+        }
 
         userRepository.delete(findUser);
     }
