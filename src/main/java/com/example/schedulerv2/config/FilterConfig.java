@@ -12,6 +12,7 @@ public class FilterConfig {
         FilterRegistrationBean<JwtAuthFilter> filterBean = new FilterRegistrationBean<>();
         filterBean.setFilter(new JwtAuthFilter());
         filterBean.addUrlPatterns("/*"); // 모든 경로에 적용
+        filterBean.setOrder(1);
         return filterBean;
     }
 }

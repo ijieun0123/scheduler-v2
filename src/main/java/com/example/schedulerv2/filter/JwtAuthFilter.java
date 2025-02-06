@@ -1,54 +1,54 @@
 package com.example.schedulerv2.filter;
 
 import com.example.schedulerv2.util.JwtUtil;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.filter.GenericFilterBean;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-public class JwtAuthFilter extends GenericFilterBean {
+@WebFilter("/*")
+public class JwtAuthFilter implements Filter {
+
+    private final JwtUtil jwtUtil = new JwtUtil();
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        HttpSession session = httpServletRequest.getSession(false);
 
-        String requestURI = ((HttpServletRequest) request).getRequestURI();
+        // 로그인, 회원가입은 인증 통과
+        String requestURI = httpServletRequest.getRequestURI();
 
-        // 0. 회원가입과 로그인 경로는 인증을 거치지 않도록 예외 처리
-        if (requestURI.contains("/users/signup") || requestURI.contains("/users/login")) {
+        if (requestURI.equals("/users/signup") || requestURI.equals("/users/login")) {
             chain.doFilter(request, response);
             return;
         }
 
-        // 1. 요청 헤더에서 Authorization 값 가져오기
-        String authHeader = httpServletRequest.getHeader("Authorization");
-
-        // 2. 토큰이 없거나 "Bearer" 로 시작하지 않으면 401 에러
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
-            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid token");
-            return;
+        if (session == null) {
+            // 세션이 없으면 인증되지 않은 상태이므로 401 반환
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.getWriter().write("Unauthorized - No session found");
+            return; // 응답 종료
         }
 
-        // 3. "Bearer " 제거 후 토큰만 추출
-        String token = authHeader.substring(7);
+        // 세션이 있으면 JWT 토큰을 확인하고 이메일을 요청 속성에 저장
+        String jwtToken = (String) session.getAttribute("jwtToken");
 
-        try{
-            // 4. 토큰 검증
-            Claims claims = JwtUtil.validateToken(token);
-            request.setAttribute("email", claims.getSubject()); // 사용자 정보 저장
-        } catch (Exception e){
-            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-            return;
+        if (jwtToken != null && jwtUtil.validateToken(jwtToken)) {
+            String email = jwtUtil.getEmailFromJwt(jwtToken);
+            request.setAttribute("email", email);
+        } else {
+            // 토큰이 없거나 유효하지 않으면 인증 실패 처리
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.getWriter().write("Unauthorized - Invalid token");
+            return; // 응답 종료
         }
 
-        // 5. 필터 체인 계속 진행
         chain.doFilter(request, response);
     }
 }

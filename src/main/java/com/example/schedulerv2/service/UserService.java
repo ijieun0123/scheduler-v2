@@ -7,6 +7,8 @@ import com.example.schedulerv2.dto.UpdateUserResponseDto;
 import com.example.schedulerv2.entity.User;
 import com.example.schedulerv2.repository.UserRepository;
 import com.example.schedulerv2.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,20 +25,33 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil = new JwtUtil();
 
-    public LoginResponseDto login(String email, String password) {
+    // 로그인
+    public LoginResponseDto login(String email, String password, HttpServletRequest request) {
+        if(validateUser(email, password)){
+            // jwtToken 생성
+            String jwtToken = jwtUtil.generateToken(email);
+
+            // 세션에 jwtToken 저장
+            HttpSession session = request.getSession();
+            session.setAttribute("jwtToken", jwtToken);
+
+            return new LoginResponseDto(jwtToken);
+        } else{
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
+    }
+
+    private boolean validateUser(String email, String password){
         User findUser = userRepository.findUserByEmailOrElseThrow(email);
 
         String storedPassword = findUser.getPassword();
-        if(!storedPassword.equals(password)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password is wrong");
-        }
 
-        String token = JwtUtil.generateToken(email);
-
-        return new LoginResponseDto(token);
+        return storedPassword.equals(password);
     }
 
+    // 회원가입
     public SaveUserResponseDto save(String username, String email, String password) {
         User user = new User(username, email, password);
 
