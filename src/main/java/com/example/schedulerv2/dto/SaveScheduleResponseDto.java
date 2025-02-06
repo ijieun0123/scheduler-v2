@@ -5,22 +5,22 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class ReadUserResponseDto {
+public class SaveScheduleResponseDto {
 
     private final Long id;
 
-    private final String username;
+    private final String title;
 
-    private final String email;
+    private final String contents;
 
     private final LocalDateTime createdAt;
 
     private final LocalDateTime modifiedAt;
 
-    public ReadUserResponseDto(Long id, String username, String email, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public SaveScheduleResponseDto(Long id, String title, String contents, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
-        this.username = username;
-        this.email = email;
+        this.title = title;
+        this.contents = contents;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }

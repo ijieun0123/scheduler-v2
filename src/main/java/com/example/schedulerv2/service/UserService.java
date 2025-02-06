@@ -30,7 +30,7 @@ public class UserService {
     public ReadUserResponseDto findById(Long id) {
         User findUser = userRepository.findByIdOrElseThrow(id);
 
-        return new ReadUserResponseDto(findUser.getUsername(), findUser.getEmail(), findUser.getCreatedAt(), findUser.getModifiedAt());
+        return new ReadUserResponseDto(findUser.getId(), findUser.getUsername(), findUser.getEmail(), findUser.getCreatedAt(), findUser.getModifiedAt());
     }
 
     @Transactional
@@ -38,11 +38,6 @@ public class UserService {
         // 비밀번호 맞는지 확인
         User findUser = userRepository.findByIdOrElseThrow(id);
         String storedPasssword = findUser.getPassword();
-
-        log.info("password: {}", password);
-        log.info("storedPassword: {}", storedPasssword);
-        log.info("username: {}", username);
-        log.info("email: {}", email);
 
         // 비밀번호 틀리다면 오류처리
         if(!storedPasssword.equals(password)){

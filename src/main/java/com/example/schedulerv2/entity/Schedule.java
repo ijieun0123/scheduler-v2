@@ -2,6 +2,7 @@ package com.example.schedulerv2.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -13,14 +14,14 @@ public class Schedule extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String title;
+    @Setter private String title;
 
     @Column(columnDefinition = "longtext")
-    private String contents;
+    @Setter private String contents;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    @Setter private User user;
 
     public Schedule() {
     }
