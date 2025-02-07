@@ -42,7 +42,7 @@ SchedulerV2는 일정 관리를 위한 Spring Boot 기반의 백엔드 프로젝
     - Postman 또는 Swagger UI 사용
 
 ## ERD 설계
-![Image](https://github.com/user-attachments/assets/ec1b7652-ccb6-4b80-928d-8ff9683f4cf5)
+![Image](https://github.com/user-attachments/assets/36c9d6a9-0d68-43ed-bb9e-bc0cef441a84)
 
 ## API 명세
 
