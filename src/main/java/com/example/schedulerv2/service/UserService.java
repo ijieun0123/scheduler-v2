@@ -1,5 +1,6 @@
 package com.example.schedulerv2.service;
 
+import com.example.schedulerv2.config.BCryptPasswordEncoder;
 import com.example.schedulerv2.dto.LoginResponseDto;
 import com.example.schedulerv2.dto.ReadUserResponseDto;
 import com.example.schedulerv2.dto.SaveUserResponseDto;
@@ -48,12 +49,14 @@ public class UserService {
 
         String storedPassword = findUser.getPassword();
 
-        return storedPassword.equals(password);
+        return BCryptPasswordEncoder.matches(password, storedPassword);
     }
 
     // 회원가입
     public SaveUserResponseDto save(String username, String email, String password) {
-        User user = new User(username, email, password);
+        String hashedPassword = BCryptPasswordEncoder.encode(password);
+
+        User user = new User(username, email, hashedPassword);
 
         User savedUser = userRepository.save(user);
 
