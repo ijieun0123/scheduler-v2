@@ -36,24 +36,30 @@ public class CommentController {
 
     // 댓글 조회 ( by scheduleId )
     @GetMapping("/schedule/{scheduleId}")
-    public ResponseEntity<List<CommentResponseDto>> findByScheduleId(@PathVariable Long scheduleId){
-        List<CommentResponseDto> commentResponseDtoList = commentService.findByScheduleId(scheduleId);
+    public ResponseEntity<List<CommentResponseDto>> findByScheduleId(
+            @PathVariable Long scheduleId,
+            @RequestParam Integer pageNumber, Integer pageSize
+    ){
+        List<CommentResponseDto> commentResponseDtoList = commentService.findByScheduleId(scheduleId, pageNumber, pageSize);
 
         return new ResponseEntity<>(commentResponseDtoList, HttpStatus.OK);
     }
 
     // 댓글 조회 ( by userId )
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CommentResponseDto>> findByUserId(@PathVariable Long userId){
-        List<CommentResponseDto> commentResponseDtoList = commentService.findByUserId(userId);
+    public ResponseEntity<List<CommentResponseDto>> findByUserId(
+            @PathVariable Long userId,
+            @RequestParam Integer pageNumber, Integer pageSize
+    ){
+        List<CommentResponseDto> commentResponseDtoList = commentService.findByUserId(userId, pageNumber, pageSize);
 
         return new ResponseEntity<>(commentResponseDtoList, HttpStatus.OK);
     }
 
     // 댓글 전체 조회
     @GetMapping
-    public ResponseEntity<List<CommentResponseDto>> findAll(){
-        List<CommentResponseDto> commentResponseDtoList = commentService.findAll();
+    public ResponseEntity<List<CommentResponseDto>> findAll(@RequestParam Integer pageNumber, Integer pageSize){
+        List<CommentResponseDto> commentResponseDtoList = commentService.findAll(pageNumber, pageSize);
 
         return new ResponseEntity<>(commentResponseDtoList, HttpStatus.OK);
     }

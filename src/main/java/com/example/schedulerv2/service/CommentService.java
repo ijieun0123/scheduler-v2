@@ -8,6 +8,9 @@ import com.example.schedulerv2.repository.CommentRepository;
 import com.example.schedulerv2.repository.ScheduleRepository;
 import com.example.schedulerv2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,23 +41,26 @@ public class CommentService {
         return CommentResponseDto.toCommentDto(findComment);
     }
 
-    public List<CommentResponseDto> findByScheduleId(Long scheduleId) {
-        List<Comment> findComments = commentRepository.findCommentsByScheduleId(scheduleId);
+    public List<CommentResponseDto> findByScheduleId(Long scheduleId, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Comment> commentPage = commentRepository.findCommentsByScheduleId(scheduleId, pageable);
 
-        return findComments.stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
+        return commentPage.getContent().stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
     }
 
 
-    public List<CommentResponseDto> findByUserId(Long userId) {
-        List<Comment> findComments = commentRepository.findCommentsByUserId(userId);
+    public List<CommentResponseDto> findByUserId(Long userId, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Comment> commentPage = commentRepository.findCommentsByUserId(userId, pageable);
 
-        return findComments.stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
+        return commentPage.getContent().stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
     }
 
-    public List<CommentResponseDto> findAll() {
-        List<Comment> findComments = commentRepository.findAll();
+    public List<CommentResponseDto> findAll(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Comment> commentPage = commentRepository.findAll(pageable);
 
-        return findComments.stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
+        return commentPage.getContent().stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
     }
 
     public CommentResponseDto update(Long id, String contents) {
