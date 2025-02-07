@@ -2,8 +2,9 @@ package com.example.schedulerv2.controller;
 
 import com.example.schedulerv2.dto.CommentResponseDto;
 import com.example.schedulerv2.dto.SaveCommentRequestDto;
-import com.example.schedulerv2.dto.UpdateScheduleRequestDto;
+import com.example.schedulerv2.dto.UpdateCommentRequestDto;
 import com.example.schedulerv2.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class CommentController {
 
     // 댓글 생성
     @PostMapping
-    public ResponseEntity<CommentResponseDto> save(@RequestBody SaveCommentRequestDto saveCommentRequestDto){
+    public ResponseEntity<CommentResponseDto> save(@Valid @RequestBody SaveCommentRequestDto saveCommentRequestDto){
         CommentResponseDto commentResponseDto = commentService.save(saveCommentRequestDto.getContents(), saveCommentRequestDto.getSchedule_id(), saveCommentRequestDto.getUser_id());
 
         return new ResponseEntity<>(commentResponseDto, HttpStatus.CREATED);
@@ -68,9 +69,9 @@ public class CommentController {
     @PatchMapping("/{id}")
     public ResponseEntity<CommentResponseDto> update(
             @PathVariable Long id,
-            @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto
+            @Valid @RequestBody UpdateCommentRequestDto updateCommentRequestDto
     ){
-        CommentResponseDto commentResponseDto = commentService.update(id, updateScheduleRequestDto.getContents());
+        CommentResponseDto commentResponseDto = commentService.update(id, updateCommentRequestDto.getContents());
 
         return new ResponseEntity<>(commentResponseDto, HttpStatus.OK);
     }
