@@ -7,13 +7,7 @@ public class UpdateUserRequestDto {
 
     private final String username;
 
-    private final String email;
-
-    private final String passsword;
-
-    public UpdateUserRequestDto(String username, String email, String password) {
+    public UpdateUserRequestDto(String username) {
         this.username = username;
-        this.email = email;
-        this.passsword = password;
     }
 }

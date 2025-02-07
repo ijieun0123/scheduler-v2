@@ -19,7 +19,7 @@ public class ScheduleController {
     // 스케줄 생성
     @PostMapping
     public ResponseEntity<SaveScheduleResponseDto> save(@RequestBody SaveScheduleRequestDto saveScheduleRequestDto){
-        SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.save(saveScheduleRequestDto.getEmail(), saveScheduleRequestDto.getPassword(), saveScheduleRequestDto.getTitle(), saveScheduleRequestDto.getPassword());
+        SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.save(saveScheduleRequestDto.getEmail(), saveScheduleRequestDto.getTitle(), saveScheduleRequestDto.getContents());
 
         return new ResponseEntity<>(saveScheduleResponseDto, HttpStatus.CREATED);
     }
@@ -46,7 +46,7 @@ public class ScheduleController {
         @PathVariable Long id,
         @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto
     ){
-        UpdateScheduleResponseDto updateScheduleResponseDto = scheduleService.update(id, updateScheduleRequestDto.getEmail(), updateScheduleRequestDto.getPassword(), updateScheduleRequestDto.getTitle(), updateScheduleRequestDto.getContents());
+        UpdateScheduleResponseDto updateScheduleResponseDto = scheduleService.update(id, updateScheduleRequestDto.getTitle(), updateScheduleRequestDto.getContents());
 
         return new ResponseEntity<>(updateScheduleResponseDto, HttpStatus.OK);
     }

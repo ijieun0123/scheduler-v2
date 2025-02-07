@@ -58,18 +58,15 @@ public class UserController {
             @PathVariable Long id,
             @RequestBody UpdateUserRequestDto updateUserRequestDto
     ){
-        UpdateUserResponseDto updateUserResponseDto = userService.update(id, updateUserRequestDto.getUsername(), updateUserRequestDto.getEmail(), updateUserRequestDto.getPasssword());
+        UpdateUserResponseDto updateUserResponseDto = userService.update(id, updateUserRequestDto.getUsername());
 
         return new ResponseEntity<>(updateUserResponseDto, HttpStatus.OK);
     }
 
     // 유저 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(
-            @PathVariable Long id,
-            @RequestBody DeleteUserRequestDto deleteUserRequestDto
-    ){
-        userService.deleteById(id, deleteUserRequestDto.getEmail(), deleteUserRequestDto.getPassword());
+    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+        userService.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

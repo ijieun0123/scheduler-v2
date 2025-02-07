@@ -9,10 +9,8 @@ import com.example.schedulerv2.repository.ScheduleRepository;
 import com.example.schedulerv2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,15 +23,8 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
-    public SaveScheduleResponseDto save(String email, String password, String title, String contents) {
+    public SaveScheduleResponseDto save(String email, String title, String contents) {
         User findUser = userRepository.findUserByEmailOrElseThrow(email);
-
-        String storedEmail = findUser.getEmail();
-        String storedPassword = findUser.getPassword();
-
-        if(!storedPassword.equals(password) || !storedEmail.equals(email)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password or Email is wrong");
-        }
 
         Schedule schedule = new Schedule(title, contents);
         schedule.setUser(findUser);
@@ -58,15 +49,8 @@ public class ScheduleService {
     }
 
     @Transactional
-    public UpdateScheduleResponseDto update(Long id, String email, String password, String title, String contents) {
+    public UpdateScheduleResponseDto update(Long id, String title, String contents) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
-
-        String storedEmail = findSchedule.getUser().getEmail();
-        String storedPassword = findSchedule.getUser().getPassword();
-
-        if(!storedPassword.equals(password) || !storedEmail.equals(email)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password or Email is wrong");
-        }
 
         if(title != null) findSchedule.setTitle(title);
         if(contents != null) findSchedule.setContents(contents);
