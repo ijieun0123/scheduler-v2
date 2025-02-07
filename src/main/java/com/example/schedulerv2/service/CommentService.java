@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> findByScheduleId(Long scheduleId, Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "modifiedAt"));
         Page<Comment> commentPage = commentRepository.findCommentsByScheduleId(scheduleId, pageable);
 
         return commentPage.getContent().stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
@@ -50,14 +51,14 @@ public class CommentService {
 
 
     public List<CommentResponseDto> findByUserId(Long userId, Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "modifiedAt"));
         Page<Comment> commentPage = commentRepository.findCommentsByUserId(userId, pageable);
 
         return commentPage.getContent().stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
     }
 
     public List<CommentResponseDto> findAll(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "modifiedAt"));
         Page<Comment> commentPage = commentRepository.findAll(pageable);
 
         return commentPage.getContent().stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
