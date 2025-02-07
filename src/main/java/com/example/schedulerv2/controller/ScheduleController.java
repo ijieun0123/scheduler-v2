@@ -19,37 +19,37 @@ public class ScheduleController {
 
     // 스케줄 생성
     @PostMapping
-    public ResponseEntity<SaveScheduleResponseDto> save(@Valid  @RequestBody SaveScheduleRequestDto saveScheduleRequestDto){
-        SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.save(saveScheduleRequestDto.getEmail(), saveScheduleRequestDto.getTitle(), saveScheduleRequestDto.getContents());
+    public ResponseEntity<ScheduleResponseDto> save(@Valid  @RequestBody SaveScheduleRequestDto saveScheduleRequestDto){
+        ScheduleResponseDto scheduleResponseDto = scheduleService.save(saveScheduleRequestDto.getEmail(), saveScheduleRequestDto.getTitle(), saveScheduleRequestDto.getContents());
 
-        return new ResponseEntity<>(saveScheduleResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(scheduleResponseDto, HttpStatus.CREATED);
     }
 
     // 스케줄 조회
     @GetMapping("/{id}")
-    public ResponseEntity<ReadScheduleResponseDto> findById(@PathVariable Long id){
-        ReadScheduleResponseDto readScheduleResponseDto = scheduleService.findById(id);
+    public ResponseEntity<ScheduleResponseDto> findById(@PathVariable Long id){
+        ScheduleResponseDto scheduleResponseDto = scheduleService.findById(id);
 
-        return new ResponseEntity<>(readScheduleResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
     }
 
     // 스케줄 전체 조회
     @GetMapping
-    public ResponseEntity<List<ReadScheduleResponseDto>> findAll(){
-        List<ReadScheduleResponseDto> schedules = scheduleService.findAll();
+    public ResponseEntity<List<ScheduleResponseDto>> findAll(@RequestParam Integer pageNumber, Integer pageSize){
+        List<ScheduleResponseDto> schedules = scheduleService.findAll(pageNumber, pageSize);
 
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
     // 스케줄 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<UpdateScheduleResponseDto> update(
+    public ResponseEntity<ScheduleResponseDto> update(
         @PathVariable Long id,
         @Valid @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto
     ){
-        UpdateScheduleResponseDto updateScheduleResponseDto = scheduleService.update(id, updateScheduleRequestDto.getTitle(), updateScheduleRequestDto.getContents());
+        ScheduleResponseDto scheduleResponseDto = scheduleService.update(id, updateScheduleRequestDto.getTitle(), updateScheduleRequestDto.getContents());
 
-        return new ResponseEntity<>(updateScheduleResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
     }
 
     // 스케줄 삭제

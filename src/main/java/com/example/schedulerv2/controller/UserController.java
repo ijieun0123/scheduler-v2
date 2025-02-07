@@ -31,37 +31,37 @@ public class UserController {
 
     // 유저 생성
     @PostMapping("/signup")
-    public ResponseEntity<SaveUserResponseDto> save(@Valid @RequestBody SaveUserRequestDto saveUserRequestDto){
-        SaveUserResponseDto saveUserResponseDto = userService.save(saveUserRequestDto.getUsername(), saveUserRequestDto.getEmail(), saveUserRequestDto.getPassword());
+    public ResponseEntity<UserResponseDto> save(@Valid @RequestBody SaveUserRequestDto saveUserRequestDto){
+        UserResponseDto userResponseDto = userService.save(saveUserRequestDto.getUsername(), saveUserRequestDto.getEmail(), saveUserRequestDto.getPassword());
 
-        return new ResponseEntity<>(saveUserResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
     // 유저 조회
     @GetMapping("/{id}")
-    public ResponseEntity<ReadUserResponseDto> findById(@PathVariable Long id){
-        ReadUserResponseDto readUserResponseDto = userService.findById(id);
+    public ResponseEntity<UserResponseDto> findById(@PathVariable Long id){
+        UserResponseDto userResponseDto = userService.findById(id);
 
-        return new ResponseEntity<>(readUserResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     // 유저 전체 조회
     @GetMapping
-    public ResponseEntity<List<ReadUserResponseDto>> findAll(){
-        List<ReadUserResponseDto> users = userService.findAll();
+    public ResponseEntity<List<UserResponseDto>> findAll(@RequestParam Integer pageNumber, Integer pageSize){
+        List<UserResponseDto> userResponseDtoList = userService.findAll(pageNumber, pageSize);
 
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(userResponseDtoList, HttpStatus.OK);
     }
 
     // 유저 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<UpdateUserResponseDto> update(
+    public ResponseEntity<UserResponseDto> update(
             @PathVariable Long id,
             @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto
     ){
-        UpdateUserResponseDto updateUserResponseDto = userService.update(id, updateUserRequestDto.getUsername());
+        UserResponseDto userResponseDto = userService.update(id, updateUserRequestDto.getUsername());
 
-        return new ResponseEntity<>(updateUserResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     // 유저 삭제

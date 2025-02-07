@@ -2,9 +2,7 @@ package com.example.schedulerv2.service;
 
 import com.example.schedulerv2.config.BCryptPasswordEncoder;
 import com.example.schedulerv2.dto.LoginResponseDto;
-import com.example.schedulerv2.dto.ReadUserResponseDto;
-import com.example.schedulerv2.dto.SaveUserResponseDto;
-import com.example.schedulerv2.dto.UpdateUserResponseDto;
+import com.example.schedulerv2.dto.UserResponseDto;
 import com.example.schedulerv2.entity.User;
 import com.example.schedulerv2.repository.UserRepository;
 import com.example.schedulerv2.util.JwtUtil;
@@ -12,6 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,37 +54,36 @@ public class UserService {
     }
 
     // 회원가입
-    public SaveUserResponseDto save(String username, String email, String password) {
+    public UserResponseDto save(String username, String email, String password) {
         String hashedPassword = BCryptPasswordEncoder.encode(password);
 
         User user = new User(username, email, hashedPassword);
 
         User savedUser = userRepository.save(user);
 
-        return new SaveUserResponseDto(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), savedUser.getCreatedAt(), savedUser.getModifiedAt());
+        return UserResponseDto.toUserDto(savedUser);
     }
 
-    public ReadUserResponseDto findById(Long id) {
+    public UserResponseDto findById(Long id) {
         User findUser = userRepository.findByIdOrElseThrow(id);
 
-        return new ReadUserResponseDto(findUser.getId(), findUser.getUsername(), findUser.getEmail(), findUser.getCreatedAt(), findUser.getModifiedAt());
+        return UserResponseDto.toUserDto(findUser);
     }
 
-    public List<ReadUserResponseDto> findAll() {
-        List<User> findUsers = userRepository.findAll();
+    public List<UserResponseDto> findAll(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> userPage = userRepository.findAll(pageable);
 
-        return findUsers.stream().map(findUser -> {
-            return new ReadUserResponseDto(findUser.getId(), findUser.getUsername(), findUser.getEmail(), findUser.getCreatedAt(), findUser.getModifiedAt());
-        }).collect(Collectors.toList());
+        return userPage.getContent().stream().map(UserResponseDto::toUserDto).collect(Collectors.toList());
     }
 
     @Transactional
-    public UpdateUserResponseDto update(Long id, String username) {
+    public UserResponseDto update(Long id, String username) {
         User findUser = userRepository.findByIdOrElseThrow(id);
 
         findUser.setUsername(username);
 
-        return new UpdateUserResponseDto(findUser.getId(), findUser.getUsername(), findUser.getEmail(), findUser.getCreatedAt(), findUser.getModifiedAt());
+        return UserResponseDto.toUserDto(findUser);
     }
 
     public void deleteById(Long id) {
