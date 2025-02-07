@@ -26,7 +26,7 @@ public class CommentService {
     private final UserRepository userRepository;
 
     public CommentResponseDto save(String contents, Long scheduleId, Long userId) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
+        Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(scheduleId);
         User findUser = userRepository.findUserByIdOrElseThrow(userId);
 
         Comment comment = new Comment(contents, findSchedule, findUser);

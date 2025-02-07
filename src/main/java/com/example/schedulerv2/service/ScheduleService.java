@@ -36,10 +36,17 @@ public class ScheduleService {
         return ScheduleResponseDto.toScheduleDto(savedSchedule);
     }
 
-    public ScheduleResponseDto findById(Long id) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+    public ScheduleResponseDto findById(Long scheduleId) {
+        Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(scheduleId);
 
         return ScheduleResponseDto.toScheduleDto(findSchedule);
+    }
+
+    public List<ScheduleResponseDto> findByUserId(Long userId, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "modifiedAt"));
+        Page<Schedule> commentPage = scheduleRepository.findSchedulesByUserId(userId, pageable);
+
+        return commentPage.getContent().stream().map(ScheduleResponseDto::toScheduleDto).collect(Collectors.toList());
     }
 
     public List<ScheduleResponseDto> findAll(Integer pageNumber, Integer pageSize) {
@@ -51,7 +58,7 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleResponseDto update(Long id, String title, String contents) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
 
         if(title != null) findSchedule.setTitle(title);
         if(contents != null) findSchedule.setContents(contents);
@@ -60,7 +67,7 @@ public class ScheduleService {
     }
 
     public void deleteById(Long id) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
 
         scheduleRepository.delete(findSchedule);
     }

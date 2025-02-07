@@ -33,6 +33,17 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
     }
 
+    // 스케줄 조회 ( by userId )
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ScheduleResponseDto>> findByUserId(
+            @PathVariable Long userId,
+            @RequestParam Integer pageNumber, Integer pageSize
+    ){
+        List<ScheduleResponseDto> scheduleResponseDtoList = scheduleService.findByUserId(userId, pageNumber, pageSize);
+
+        return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
+    }
+
     // 스케줄 전체 조회
     @GetMapping
     public ResponseEntity<List<ScheduleResponseDto>> findAll(@RequestParam Integer pageNumber, Integer pageSize){
