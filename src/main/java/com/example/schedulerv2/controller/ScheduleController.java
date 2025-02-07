@@ -2,6 +2,7 @@ package com.example.schedulerv2.controller;
 
 import com.example.schedulerv2.dto.*;
 import com.example.schedulerv2.service.ScheduleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ScheduleController {
 
     // 스케줄 생성
     @PostMapping
-    public ResponseEntity<SaveScheduleResponseDto> save(@RequestBody SaveScheduleRequestDto saveScheduleRequestDto){
+    public ResponseEntity<SaveScheduleResponseDto> save(@Valid  @RequestBody SaveScheduleRequestDto saveScheduleRequestDto){
         SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.save(saveScheduleRequestDto.getEmail(), saveScheduleRequestDto.getTitle(), saveScheduleRequestDto.getContents());
 
         return new ResponseEntity<>(saveScheduleResponseDto, HttpStatus.CREATED);
@@ -44,7 +45,7 @@ public class ScheduleController {
     @PatchMapping("/{id}")
     public ResponseEntity<UpdateScheduleResponseDto> update(
         @PathVariable Long id,
-        @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto
+        @Valid @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto
     ){
         UpdateScheduleResponseDto updateScheduleResponseDto = scheduleService.update(id, updateScheduleRequestDto.getTitle(), updateScheduleRequestDto.getContents());
 

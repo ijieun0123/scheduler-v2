@@ -3,6 +3,7 @@ package com.example.schedulerv2.controller;
 import com.example.schedulerv2.dto.*;
 import com.example.schedulerv2.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(
-            @RequestBody LoginRequestDto loginRequestDto,
+            @Valid @RequestBody LoginRequestDto loginRequestDto,
             HttpServletRequest request
     ){
         LoginResponseDto loginResponseDto = userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword(), request);
@@ -30,7 +31,7 @@ public class UserController {
 
     // 유저 생성
     @PostMapping("/signup")
-    public ResponseEntity<SaveUserResponseDto> save(@RequestBody SaveUserRequestDto saveUserRequestDto){
+    public ResponseEntity<SaveUserResponseDto> save(@Valid @RequestBody SaveUserRequestDto saveUserRequestDto){
         SaveUserResponseDto saveUserResponseDto = userService.save(saveUserRequestDto.getUsername(), saveUserRequestDto.getEmail(), saveUserRequestDto.getPassword());
 
         return new ResponseEntity<>(saveUserResponseDto, HttpStatus.CREATED);
@@ -56,7 +57,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<UpdateUserResponseDto> update(
             @PathVariable Long id,
-            @RequestBody UpdateUserRequestDto updateUserRequestDto
+            @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto
     ){
         UpdateUserResponseDto updateUserResponseDto = userService.update(id, updateUserRequestDto.getUsername());
 
