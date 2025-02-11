@@ -27,8 +27,10 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
-    public ScheduleResponseDto save(String email, String title, String contents) {
-        User findUser = userRepository.findUserByEmailOrElseThrow(email);
+    public ScheduleResponseDto save(String title, String contents, HttpServletRequest request) {
+        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
+
+        User findUser = userRepository.findUserByEmailOrElseThrow(currentUserEmail);
 
         Schedule schedule = new Schedule(title, contents);
         schedule.setUser(findUser);

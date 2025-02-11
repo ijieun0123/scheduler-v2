@@ -22,8 +22,8 @@ public class ScheduleController {
 
     // 스케줄 생성
     @PostMapping
-    public ResponseEntity<ScheduleResponseDto> save(@Valid  @RequestBody SaveScheduleRequestDto saveScheduleRequestDto){
-        ScheduleResponseDto scheduleResponseDto = scheduleService.save(saveScheduleRequestDto.getEmail(), saveScheduleRequestDto.getTitle(), saveScheduleRequestDto.getContents());
+    public ResponseEntity<ScheduleResponseDto> save(@Valid  @RequestBody SaveScheduleRequestDto saveScheduleRequestDto, HttpServletRequest request){
+        ScheduleResponseDto scheduleResponseDto = scheduleService.save(saveScheduleRequestDto.getTitle(), saveScheduleRequestDto.getContents(), request);
 
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.CREATED);
     }
