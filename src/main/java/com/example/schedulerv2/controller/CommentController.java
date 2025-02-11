@@ -4,6 +4,7 @@ import com.example.schedulerv2.dto.response.CommentResponseDto;
 import com.example.schedulerv2.dto.request.SaveCommentRequestDto;
 import com.example.schedulerv2.dto.request.UpdateCommentRequestDto;
 import com.example.schedulerv2.service.CommentService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -69,9 +70,10 @@ public class CommentController {
     @PatchMapping("/{id}")
     public ResponseEntity<CommentResponseDto> update(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateCommentRequestDto updateCommentRequestDto
+            @Valid @RequestBody UpdateCommentRequestDto updateCommentRequestDto,
+            HttpServletRequest request
     ){
-        CommentResponseDto commentResponseDto = commentService.update(id, updateCommentRequestDto.getContents());
+        CommentResponseDto commentResponseDto = commentService.update(id, updateCommentRequestDto.getContents(), request);
 
         return new ResponseEntity<>(commentResponseDto, HttpStatus.OK);
     }
