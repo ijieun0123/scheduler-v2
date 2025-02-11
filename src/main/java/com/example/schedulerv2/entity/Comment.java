@@ -2,11 +2,13 @@ package com.example.schedulerv2.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Entity
 @Table(name = "comment")
+@NoArgsConstructor
 public class Comment extends BaseEntity {
 
     @Id
@@ -22,9 +24,6 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    public Comment() {
-    }
 
     public Comment(String contents, Schedule schedule, User user) {
         this.contents = contents;
