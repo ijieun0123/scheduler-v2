@@ -35,13 +35,11 @@ public class ScheduleService {
 
         return ScheduleResponseDto.toScheduleDto(savedSchedule);
     }
-
     public ScheduleResponseDto findById(Long scheduleId) {
         Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(scheduleId);
-
+        
         return ScheduleResponseDto.toScheduleDto(findSchedule);
     }
-
     public List<ScheduleResponseDto> findByUserId(Long userId, Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "modifiedAt"));
         Page<Schedule> commentPage = scheduleRepository.findSchedulesByUserId(userId, pageable);
