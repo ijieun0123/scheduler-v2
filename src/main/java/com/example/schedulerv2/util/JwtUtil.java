@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -45,5 +46,14 @@ public class JwtUtil {
                 .parseClaimsJws(jwtToken)
                 .getBody();
         return claims.getSubject();
+    }
+
+    // request 에서 email 추출
+    static public String getEmailFromRequest(HttpServletRequest request){
+        String email = (String) request.getAttribute("email");
+
+        if(email == null) throw new IllegalArgumentException("리퀘스트에 이메일이 없습니다.");
+
+        return email;
     }
 }

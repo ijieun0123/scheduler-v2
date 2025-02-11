@@ -5,6 +5,8 @@ import com.example.schedulerv2.entity.Schedule;
 import com.example.schedulerv2.entity.User;
 import com.example.schedulerv2.repository.ScheduleRepository;
 import com.example.schedulerv2.repository.UserRepository;
+import com.example.schedulerv2.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -55,8 +57,14 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleResponseDto update(Long id, String title, String contents) {
+    public ScheduleResponseDto update(Long id, String title, String contents, HttpServletRequest request) {
+        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
+
         Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
+
+        if(!findSchedule.getUser().getEmail().equals(currentUserEmail)){
+            throw new SecurityException("이 일정을 수정할 권한이 없습니다.");
+        }
 
         if(title != null) findSchedule.setTitle(title);
         if(contents != null) findSchedule.setContents(contents);
