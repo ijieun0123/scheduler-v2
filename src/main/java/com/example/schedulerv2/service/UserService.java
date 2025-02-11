@@ -78,8 +78,14 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto update(Long id, String username) {
+    public UserResponseDto update(Long id, String username, HttpServletRequest request) {
+        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
+
         User findUser = userRepository.findByIdOrElseThrow(id);
+
+        if(!findUser.getEmail().equals(currentUserEmail)){
+            throw new SecurityException("이 유저를 수정할 권한이 없습니다.");
+        }
 
         findUser.setUsername(username);
 
