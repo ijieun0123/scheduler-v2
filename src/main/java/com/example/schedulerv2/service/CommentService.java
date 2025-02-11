@@ -1,6 +1,6 @@
 package com.example.schedulerv2.service;
 
-import com.example.schedulerv2.dto.CommentResponseDto;
+import com.example.schedulerv2.dto.response.CommentResponseDto;
 import com.example.schedulerv2.entity.Comment;
 import com.example.schedulerv2.entity.Schedule;
 import com.example.schedulerv2.entity.User;

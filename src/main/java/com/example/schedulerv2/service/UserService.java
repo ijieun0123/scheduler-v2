@@ -1,8 +1,8 @@
 package com.example.schedulerv2.service;
 
 import com.example.schedulerv2.config.BCryptPasswordEncoder;
-import com.example.schedulerv2.dto.LoginResponseDto;
-import com.example.schedulerv2.dto.UserResponseDto;
+import com.example.schedulerv2.dto.response.LoginResponseDto;
+import com.example.schedulerv2.dto.response.UserResponseDto;
 import com.example.schedulerv2.entity.User;
 import com.example.schedulerv2.repository.UserRepository;
 import com.example.schedulerv2.util.JwtUtil;

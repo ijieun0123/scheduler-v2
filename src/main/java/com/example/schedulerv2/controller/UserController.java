@@ -1,6 +1,10 @@
 package com.example.schedulerv2.controller;
 
-import com.example.schedulerv2.dto.*;
+import com.example.schedulerv2.dto.request.LoginRequestDto;
+import com.example.schedulerv2.dto.request.SaveUserRequestDto;
+import com.example.schedulerv2.dto.request.UpdateUserRequestDto;
+import com.example.schedulerv2.dto.response.LoginResponseDto;
+import com.example.schedulerv2.dto.response.UserResponseDto;
 import com.example.schedulerv2.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

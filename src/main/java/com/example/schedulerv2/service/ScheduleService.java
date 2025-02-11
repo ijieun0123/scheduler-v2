@@ -1,6 +1,6 @@
 package com.example.schedulerv2.service;
 
-import com.example.schedulerv2.dto.ScheduleResponseDto;
+import com.example.schedulerv2.dto.response.ScheduleResponseDto;
 import com.example.schedulerv2.entity.Schedule;
 import com.example.schedulerv2.entity.User;
 import com.example.schedulerv2.repository.ScheduleRepository;
@@ -37,7 +37,7 @@ public class ScheduleService {
     }
     public ScheduleResponseDto findById(Long scheduleId) {
         Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(scheduleId);
-        
+
         return ScheduleResponseDto.toScheduleDto(findSchedule);
     }
     public List<ScheduleResponseDto> findByUserId(Long userId, Integer pageNumber, Integer pageSize) {

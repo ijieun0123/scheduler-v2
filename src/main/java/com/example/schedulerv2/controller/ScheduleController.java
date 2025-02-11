@@ -1,6 +1,8 @@
 package com.example.schedulerv2.controller;
 
-import com.example.schedulerv2.dto.*;
+import com.example.schedulerv2.dto.request.SaveScheduleRequestDto;
+import com.example.schedulerv2.dto.request.UpdateScheduleRequestDto;
+import com.example.schedulerv2.dto.response.ScheduleResponseDto;
 import com.example.schedulerv2.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
