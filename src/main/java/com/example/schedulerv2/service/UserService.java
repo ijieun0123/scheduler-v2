@@ -32,7 +32,7 @@ public class UserService {
 
     // 로그인
     public LoginResponseDto login(String email, String password, HttpServletRequest request) {
-        if(validateUser(email, password)){
+        if(passwordCheck(email, password)){
             // jwtToken 생성
             String jwtToken = jwtUtil.generateToken(email);
 
@@ -46,7 +46,7 @@ public class UserService {
         }
     }
 
-    private boolean validateUser(String email, String password){
+    private boolean passwordCheck(String email, String password){
         User findUser = userRepository.findUserByEmailOrElseThrow(email);
 
         String storedPassword = findUser.getPassword();
