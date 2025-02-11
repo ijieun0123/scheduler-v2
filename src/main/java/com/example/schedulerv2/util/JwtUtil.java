@@ -15,7 +15,7 @@ public class JwtUtil {
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1시간
 
     // JWT 생성
-    public String generateToken(String email){
+    static public String generateToken(String email){
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
@@ -25,7 +25,7 @@ public class JwtUtil {
     }
 
     // JWT 검증
-    public boolean validateToken(String jwtToken){
+    static public boolean validateToken(String jwtToken){
         try {
             Jwts.parserBuilder()
                     .setSigningKey(SECRET_KEY) // 안전한 Secret Key 사용
@@ -38,7 +38,7 @@ public class JwtUtil {
     }
 
     // JWT 에서 이메일 추출
-    public String getEmailFromJwt(String jwtToken){
+    static public String getEmailFromJwt(String jwtToken){
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
                 .build()

@@ -28,13 +28,12 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil = new JwtUtil();
 
     // 로그인
     public LoginResponseDto login(String email, String password, HttpServletRequest request) {
         if(passwordCheck(email, password)){
             // jwtToken 생성
-            String jwtToken = jwtUtil.generateToken(email);
+            String jwtToken = JwtUtil.generateToken(email);
 
             // 세션에 jwtToken 저장
             HttpSession session = request.getSession();

@@ -12,8 +12,6 @@ import java.io.IOException;
 @WebFilter("/*")
 public class JwtAuthFilter implements Filter {
 
-    private final JwtUtil jwtUtil = new JwtUtil();
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -39,8 +37,8 @@ public class JwtAuthFilter implements Filter {
         // 세션이 있으면 JWT 토큰을 확인하고 이메일을 요청 속성에 저장
         String jwtToken = (String) session.getAttribute("jwtToken");
 
-        if (jwtToken != null && jwtUtil.validateToken(jwtToken)) {
-            String email = jwtUtil.getEmailFromJwt(jwtToken);
+        if (jwtToken != null && JwtUtil.validateToken(jwtToken)) {
+            String email = JwtUtil.getEmailFromJwt(jwtToken);
             request.setAttribute("email", email);
         } else {
             // 토큰이 없거나 유효하지 않으면 인증 실패 처리
