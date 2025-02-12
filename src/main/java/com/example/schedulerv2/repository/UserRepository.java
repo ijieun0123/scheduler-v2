@@ -4,6 +4,7 @@ import com.example.schedulerv2.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,5 +30,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exists id: " + id));
     }
 
+    @Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.schedules LEFT JOIN FETCH u.comments")
     Page<User> findAll(Pageable pageable);
 }

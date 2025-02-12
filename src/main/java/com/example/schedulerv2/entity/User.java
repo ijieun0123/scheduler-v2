@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -28,10 +28,12 @@ public class User extends BaseEntity {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Schedule> schedules = new ArrayList<>();
+    @OrderBy("modifiedAt DESC")
+    private Set<Schedule> schedules = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Comment> comments = new ArrayList<>();
+    @OrderBy("modifiedAt DESC")
+    private Set<Comment> comments = new LinkedHashSet<>();
 
     public User(String username, String email, String password) {
         this.username = username;
