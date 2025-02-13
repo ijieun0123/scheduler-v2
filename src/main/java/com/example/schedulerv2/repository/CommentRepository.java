@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long>, CommentsRepositoryCustom {
 
     Optional<Comment> findCommentById(Long id);
 

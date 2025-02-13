@@ -1,12 +1,13 @@
 package com.example.schedulerv2.controller;
 
-import com.example.schedulerv2.dto.response.CommentResponseDto;
 import com.example.schedulerv2.dto.request.SaveCommentRequestDto;
 import com.example.schedulerv2.dto.request.UpdateCommentRequestDto;
+import com.example.schedulerv2.dto.response.CommentResponseDto;
 import com.example.schedulerv2.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/comments")
 @RequiredArgsConstructor
+@Slf4j
 public class CommentController {
 
     private final CommentService commentService;
@@ -54,6 +56,20 @@ public class CommentController {
             @RequestParam Integer pageNumber, Integer pageSize
     ){
         List<CommentResponseDto> commentResponseDtoList = commentService.findByUserId(userId, pageNumber, pageSize);
+
+        return new ResponseEntity<>(commentResponseDtoList, HttpStatus.OK);
+    }
+
+    // QueryDSL test
+    @GetMapping("/search")
+    public ResponseEntity<List<CommentResponseDto>> findComments(
+            @RequestParam(required = false) Long scheduleId,
+            @RequestParam(required = false) Long userId
+    ){
+        log.info("[controller] scheduleId: {}", scheduleId);
+        log.info("[controller] userId: {}", userId);
+
+        List<CommentResponseDto> commentResponseDtoList = commentService.getComments(scheduleId, userId);
 
         return new ResponseEntity<>(commentResponseDtoList, HttpStatus.OK);
     }

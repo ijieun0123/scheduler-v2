@@ -10,6 +10,7 @@ import com.example.schedulerv2.repository.UserRepository;
 import com.example.schedulerv2.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -57,6 +59,16 @@ public class CommentService {
         Page<Comment> commentPage = commentRepository.findCommentsByUserId(userId, pageable);
 
         return commentPage.getContent().stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
+    }
+
+    // queryDSL test
+    public List<CommentResponseDto> getComments(Long scheduleId, Long userId){
+        log.info("[service] scheduleId: {}", scheduleId);
+        log.info("[service] userId: {}", userId);
+
+        List<Comment> findComments = commentRepository.findByScheduleIdAndUserId(scheduleId, userId);
+
+        return findComments.stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
     }
 
     public List<CommentResponseDto> findAll(Integer pageNumber, Integer pageSize) {
