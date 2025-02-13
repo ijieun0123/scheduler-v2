@@ -7,7 +7,7 @@ import lombok.Getter;
 public class UpdateCommentRequestDto {
 
     @NotBlank(message = "컨텐츠를 입력하세요.")
-    private final String contents;
+    private String contents;
 
     public UpdateCommentRequestDto(String contents) {
         this.contents = contents;

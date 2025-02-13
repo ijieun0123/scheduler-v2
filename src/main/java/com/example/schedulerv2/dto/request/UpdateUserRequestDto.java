@@ -9,7 +9,7 @@ public class UpdateUserRequestDto {
 
     @NotBlank(message = "이름을 입력하세요.")
     @Size(min = 2, max = 10, message = "2 ~ 10 자를 입력하세요.")
-    private final String username;
+    private String username;
 
     public UpdateUserRequestDto(String username) {
         this.username = username;

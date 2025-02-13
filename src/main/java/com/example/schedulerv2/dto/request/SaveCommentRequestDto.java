@@ -8,13 +8,13 @@ import lombok.Getter;
 public class SaveCommentRequestDto {
 
     @NotBlank(message = "컨텐츠를 입력하세요.")
-    private final String contents;
+    private String contents;
 
     @NotNull(message = "스케줄 아이디를 입력하세요.")
-    private final Long schedule_id;
+    private Long schedule_id;
 
     @NotNull(message = "유저 아이디를 입력하세요.")
-    private final Long user_id;
+    private Long user_id;
 
     public SaveCommentRequestDto(String contents, Long schedule_id, Long user_id) {
         this.contents = contents;
