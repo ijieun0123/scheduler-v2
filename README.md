@@ -15,10 +15,12 @@ SchedulerV2는 일정 관리를 위한 Spring Boot 기반의 백엔드 프로젝
 
 1. **일정 관리**: 사용자는 자신의 일정을 생성, 수정, 삭제할 수 있습니다.
 2. **댓글 관리**: 사용자는 자신의 댓글을 생성, 수정, 삭제할 수 있습니다.
-3. **인증 및 인가**: Spring Security 없이 Servlet Filter 및 JWT 기반 인증을 구현하였습니다.
+3. **인증**: Spring Security 없이 Servlet Filter 및 JWT 기반 인증을 구현하였습니다.
 4. **사용자 관리**:
     - 일정 작성자를 위한 `user` 테이블을 활용
     - 회원가입 및 로그인 기능 제공 (JWT 기반)
+5. **페이징**
+6. **validation**: Bean Validation 을 사용하여 유효성을 검사할 수 있습니다.
 
 ## 설치 및 실행 방법
 
