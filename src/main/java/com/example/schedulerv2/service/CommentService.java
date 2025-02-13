@@ -7,8 +7,6 @@ import com.example.schedulerv2.entity.User;
 import com.example.schedulerv2.repository.CommentRepository;
 import com.example.schedulerv2.repository.ScheduleRepository;
 import com.example.schedulerv2.repository.UserRepository;
-import com.example.schedulerv2.util.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -78,9 +76,7 @@ public class CommentService {
         return commentPage.getContent().stream().map(CommentResponseDto::toCommentDto).collect(Collectors.toList());
     }
 
-    public CommentResponseDto update(Long id, String contents, HttpServletRequest request) {
-        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
-
+    public CommentResponseDto update(Long id, String contents, String currentUserEmail) {
         Comment findComment = commentRepository.findCommentByIdOrElseThrow(id);
 
         if(!findComment.getUser().getEmail().equals(currentUserEmail)){
@@ -92,8 +88,12 @@ public class CommentService {
         return CommentResponseDto.toCommentDto(findComment);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, String currentUserEmail) {
         Comment findComment = commentRepository.findCommentByIdOrElseThrow(id);
+
+        if(!findComment.getUser().getEmail().equals(currentUserEmail)){
+            throw new SecurityException("이 댓글을 삭제할 권한이 없습니다.");
+        }
 
         commentRepository.delete(findComment);
     }

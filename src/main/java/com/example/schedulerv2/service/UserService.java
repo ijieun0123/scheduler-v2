@@ -6,7 +6,6 @@ import com.example.schedulerv2.dto.response.UserResponseDto;
 import com.example.schedulerv2.entity.User;
 import com.example.schedulerv2.repository.UserRepository;
 import com.example.schedulerv2.util.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +29,12 @@ public class UserService {
     private final UserRepository userRepository;
 
     // 로그인
-    public LoginResponseDto login(String email, String password, HttpServletRequest request) {
+    public LoginResponseDto login(String email, String password, HttpSession session) {
         if(passwordCheck(email, password)){
             // jwtToken 생성
             String jwtToken = JwtUtil.generateToken(email);
 
             // 세션에 jwtToken 저장
-            HttpSession session = request.getSession();
             session.setAttribute("jwtToken", jwtToken);
 
             return new LoginResponseDto(jwtToken);
@@ -78,9 +76,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto update(Long id, String username, HttpServletRequest request) {
-        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
-
+    public UserResponseDto update(Long id, String username, String currentUserEmail) {
         User findUser = userRepository.findByIdOrElseThrow(id);
 
         if(!findUser.getEmail().equals(currentUserEmail)){
@@ -92,8 +88,12 @@ public class UserService {
         return UserResponseDto.toUserDto(findUser);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, String currentUserEmail) {
         User findUser = userRepository.findByIdOrElseThrow(id);
+
+        if(!findUser.getEmail().equals(currentUserEmail)){
+            throw new SecurityException("이 유저를 삭제할 권한이 없습니다.");
+        }
 
         userRepository.delete(findUser);
     }

@@ -4,6 +4,7 @@ import com.example.schedulerv2.dto.request.SaveCommentRequestDto;
 import com.example.schedulerv2.dto.request.UpdateCommentRequestDto;
 import com.example.schedulerv2.dto.response.CommentResponseDto;
 import com.example.schedulerv2.service.CommentService;
+import com.example.schedulerv2.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -89,15 +90,19 @@ public class CommentController {
             @Valid @RequestBody UpdateCommentRequestDto updateCommentRequestDto,
             HttpServletRequest request
     ){
-        CommentResponseDto commentResponseDto = commentService.update(id, updateCommentRequestDto.getContents(), request);
+        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
+
+        CommentResponseDto commentResponseDto = commentService.update(id, updateCommentRequestDto.getContents(), currentUserEmail);
 
         return new ResponseEntity<>(commentResponseDto, HttpStatus.OK);
     }
 
     // 댓글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
-        commentService.deleteById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id, HttpServletRequest request){
+        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
+
+        commentService.deleteById(id, currentUserEmail);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

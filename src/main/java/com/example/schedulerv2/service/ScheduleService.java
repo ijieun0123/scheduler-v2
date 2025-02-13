@@ -5,8 +5,6 @@ import com.example.schedulerv2.entity.Schedule;
 import com.example.schedulerv2.entity.User;
 import com.example.schedulerv2.repository.ScheduleRepository;
 import com.example.schedulerv2.repository.UserRepository;
-import com.example.schedulerv2.util.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,9 +25,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
-    public ScheduleResponseDto save(String title, String contents, HttpServletRequest request) {
-        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
-
+    public ScheduleResponseDto save(String title, String contents, String currentUserEmail) {
         User findUser = userRepository.findUserByEmailOrElseThrow(currentUserEmail);
 
         Schedule schedule = new Schedule(title, contents);
@@ -59,9 +55,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleResponseDto update(Long id, String title, String contents, HttpServletRequest request) {
-        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
-
+    public ScheduleResponseDto update(Long id, String title, String contents, String currentUserEmail) {
         Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
 
         if(!findSchedule.getUser().getEmail().equals(currentUserEmail)){
@@ -74,8 +68,12 @@ public class ScheduleService {
         return ScheduleResponseDto.toScheduleDto(findSchedule);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, String currentUserEmail) {
         Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
+
+        if(!findSchedule.getUser().getEmail().equals(currentUserEmail)){
+            throw new SecurityException("이 일정을 삭제할 권한이 없습니다.");
+        }
 
         scheduleRepository.delete(findSchedule);
     }

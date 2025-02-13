@@ -6,7 +6,9 @@ import com.example.schedulerv2.dto.request.UpdateUserRequestDto;
 import com.example.schedulerv2.dto.response.LoginResponseDto;
 import com.example.schedulerv2.dto.response.UserResponseDto;
 import com.example.schedulerv2.service.UserService;
+import com.example.schedulerv2.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,7 +30,9 @@ public class UserController {
             @Valid @RequestBody LoginRequestDto loginRequestDto,
             HttpServletRequest request
     ){
-        LoginResponseDto loginResponseDto = userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword(), request);
+        HttpSession session = request.getSession();
+
+        LoginResponseDto loginResponseDto = userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword(), session);
 
         return new ResponseEntity<>(loginResponseDto, HttpStatus.OK);
     }
@@ -64,15 +68,22 @@ public class UserController {
             @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto,
             HttpServletRequest request
     ){
-        UserResponseDto userResponseDto = userService.update(id, updateUserRequestDto.getUsername(), request);
+        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
+
+        UserResponseDto userResponseDto = userService.update(id, updateUserRequestDto.getUsername(), currentUserEmail);
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     // 유저 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
-        userService.deleteById(id);
+    public ResponseEntity<Void> deleteById(
+            @PathVariable Long id,
+            HttpServletRequest request
+    ){
+        String currentUserEmail = JwtUtil.getEmailFromRequest(request);
+
+        userService.deleteById(id, currentUserEmail);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
